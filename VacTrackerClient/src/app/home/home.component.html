@@ -1,0 +1,49 @@
+<div class="container d-flex justify-content-center align-items-center min-vh-100">
+  <div class="row outer-div w-75">
+    <div class="col-md-6 left-side">
+      <img class="logo" src="assets/images/logo.png" alt="logo">
+      <div class="vacText w-50">
+        <h2>ভ্যাকস্ট্যাটাস</h2>
+        <p>টিকা ট্র্যাকার ওয়েবসাইট</p>
+      </div>
+
+      <div class="input-group  mb-3 px-5 search">
+        <form action="" method="post">
+
+          <h4 class="text-center">টিকা গ্রহনের তথ্য জানুন</h4>
+          <input type="text" name="User_id" class="form-control border-3 px-5"
+                 placeholder="আইডি সার্চ করুন">
+          <div class="text-center mt-2">
+            <span>without log in<a routerLink="/vacwithoutlogin" href="#"> Here</a></span>
+            <button class="btn py-1 detail-btn rounded-2 border-3" type="submit" name="btn_1"> সার্চ</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div class="col-md-6 d-flex justify-content-center align-items-center right-side">
+
+      <div class="input-box">
+        <form action="" method="post">
+          <h2 class="text-center mb-5">লগ ইন</h2>
+          <div class="input-field d-flex flex-column mb-3">
+            <input type="text" class="form-control input rounded-2 p-1 border-3" name="User_id"
+                   id="userId" placeholder="ইউজার আইডি
+                                " required autocomplete="off">
+          </div>
+          <div class="input-field d-flex flex-column mb-3">
+            <input type="password" class="form-control input rounded-2 p-1 border-3"
+                   name="User_password" id="password" placeholder="পাসওয়ার্ড" required>
+          </div>
+          <div class="input-field d-flex flex-column">
+            <button class="btn detail-btn" type="submit" name="btn_2">লগ ইন</button>
+          </div>
+        </form>
+        <div class="register">
+          <span>Don't have an account? <a routerLink="/user" href="#">Register Here</a></span>
+          <span>vaccinator<a routerLink="/vaccinator" href="#"> Here</a></span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,1 +1,176 @@
 /* You can add global styles to this file, and also import other style files */
+
+body{
+  font-family: 'Poppins', sans-serif;
+  font-family: 'Tiro Bangla', serif;
+  background-image:linear-gradient(180deg,rebeccaPurple,rgba(116, 78, 144, 0.899));
+  padding: 0px 0px;
+}
+
+/* Navbar */
+.navImg{
+  height: 60px !important;
+}
+
+.fa-user {
+
+  border: 3px solid rgb(63, 27, 147);
+  border-radius: 50%;
+  color: white;
+  background-color: rebeccapurple;
+  padding: 10px;
+
+}
+
+.nav-link {
+  font-size: 18px !important;
+  font-weight:bolder !important;
+  color: rebeccapurple !important;
+  text-decoration: none;
+  margin-left: 20px;
+  transition: 0.2;
+}
+
+.nav-link:hover{
+  color: rgb(121, 61, 181) !important;
+
+}
+
+nav .btn{
+  background-color: rebeccapurple;
+  border: 2px solid rgb(63, 27, 147);
+  transition: 0.2;
+}
+
+nav .btn:hover{
+  background-color: rgb(138, 81, 195);
+  border: 2px solid rgb(99, 52, 210);
+}
+
+/* outer div */
+
+
+.outer-div{
+  height: 65vh;
+  border-radius: 10px;
+  background: #fff;
+  box-shadow: 5px 5px 10px 10px rgba(59, 58, 52, 0.628);
+  background-image: url(assets/images/background.png);
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-position: center;
+}
+
+.certificate{
+  height: 75vh;
+  border-radius: 10px;
+  background: #fff;
+  box-shadow: 5px 5px 10px 10px rgba(59, 58, 52, 0.628);
+  background-image: url("https://i.ibb.co/vsYxpDb/background1.png");
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-position: center;
+
+}
+
+
+/* Let Div */
+
+.left-side{
+  position: relative;
+  /* border: 5px solid #FBE72D; */
+  border-radius: 10px 0 0 10px;
+  color: rebeccapurple;
+}
+
+.logo{
+  max-width: 8vw;
+  position: absolute;
+  top: 2%;
+  left: 2%;
+}
+.vacText{
+  position: absolute;
+  top: 30%;
+  left: 30%;
+
+}
+.search{
+  top: 60%;
+}
+
+/* right div */
+
+.right-side{
+  color: rebeccapurple;
+}
+
+.submit{
+  margin: 0 !important;
+  text-decoration: none;
+  transition: 0.1;
+  color: #fff !important;
+}
+
+.submit:hover{
+  background: rgb(121, 61, 181);
+}
+
+.form-control::placeholder{
+  color: rebeccapurple;
+}
+.form-control{
+  color: rebeccapurple;
+}
+
+.form-control:focus {
+  color: rebeccapurple;
+  border-color: rebeccapurple;
+  box-shadow: 0 0 0 0.25rem rgba(102, 51, 153, 0.516);
+}
+
+.scbtn{
+  margin-left: 10px !important;
+}
+
+.btn{
+  background-color: rebeccapurple !important;
+  transition: 0.1;
+  color: #fff;
+}
+.btn:hover{
+  background: rgb(121, 61, 181);
+  color: #fff;
+}
+a{
+  color: rebeccapurple;
+}
+
+
+/* user page */
+
+.detail-btn{
+  background-color: rebeccapurple !important;
+  color: #fff !important;
+
+}
+.detail-btn:hover{
+  background: rgb(121, 61, 181) !important;
+}
+
+.cardTop-color{
+  background-image:linear-gradient(to top,rgb(130, 110, 151),rgba(253, 253, 253, 0.899)) !important;
+
+}
+
+
+
+/* Healthcare Page */
+
+.vacUpdate{
+
+  background-color: #fff;
+  box-shadow: 3px 3px 6px 6px rgba(59, 59, 59, 0.657);
+}
+
+

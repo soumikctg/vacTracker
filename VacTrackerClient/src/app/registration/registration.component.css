@@ -1,0 +1,12 @@
+.logo {
+  max-width: 7vw;
+  position: absolute;
+  top: 5%;
+  left: 5%;
+}
+
+.vacText {
+  position: absolute;
+  top: 50%;
+  left: 30%;
+}
