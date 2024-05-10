@@ -6,7 +6,7 @@ class User(AbstractUser):
     userId = models.AutoField(primary_key=True)
     name = models.CharField(max_length=60)
     password = models.CharField(max_length=200)
-    phone = models.CharField(max_length=200)
+    phone = models.CharField(max_length=200,  unique=True)
     userType = models.CharField(max_length=50)
     username = None
 
