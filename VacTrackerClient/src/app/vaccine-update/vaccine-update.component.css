@@ -1,0 +1,78 @@
+body{
+    height: auto;
+    background-image:linear-gradient(180deg,rebeccaPurple,rgba(116, 78, 144, 0.899));
+    font-family: 'Tiro Bangla', serif;
+}
+.navImg{
+    width: 50px;
+}
+
+th{
+    height:70px;
+    text-align: center;
+    font-size: 1.5rem;
+
+}
+td{
+    /* height:70px; */
+    text-align: center;
+    vertical-align: middle;
+    font-size: 1.5rem;
+}
+.td-head{
+    font-size: large;
+    font-weight:bold;
+}
+.text-primary{
+    color:rebeccapurple !important;
+}
+
+.form-check-input{
+    height: 60px;
+    width:70px;
+    border: 2px solid rgb(8, 7, 8);
+}
+
+.form-check-input:checked{
+    background-color: rebeccapurple !important;
+    border-color: rebeccapurple !important;
+}
+
+.form-check-input:focus {
+    border-color: rebeccapurple;
+    outline: 0;
+    box-shadow: 0 0 0 0.25rem rgba(102, 51, 153, 0.414);
+}
+
+.custom-btn-white{
+    transition: 0.1;
+    border: black;
+}
+
+.custom-btn-white:hover{
+    background-color: rgb(219, 193, 250) !important;
+    border: black;
+}
+
+
+.detail-btn{
+    background-color: rebeccapurple !important;
+    color: #fff !important;
+
+}
+.detail-btn:hover{
+    background: rgb(121, 61, 181) !important;
+}
+
+.abc{
+    background-color: rebeccapurple !important;
+    border-color: rebeccapurple !important;
+}
+
+
+.empty-box{
+    border: 2px solid rgb(0, 0, 0) !important;
+    height: 4.5rem;
+    width: 4.5rem;
+
+}

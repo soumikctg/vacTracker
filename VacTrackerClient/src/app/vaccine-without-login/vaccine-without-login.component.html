@@ -1,0 +1,279 @@
+<div class="container rounded-3 mt-5 p-5">
+    <div class="container d-flex justify-content-center align-items-center text-dark mt-2 mb-3">
+        <h1 class="fs-1 mb-3 text-white"><i class="bi bi-person-vcard fs-1 me-2"></i>ইউজার প্রোফাইল</h1>
+    </div>
+    <div class="row d-flex justify-content-evenly">
+        <div class="col-md-5 col-sm-12">
+            <div class="card h-100 shadow-lg px-3 py-2">
+
+                <div class="card-body table-responsive">
+                    <div class="text-center">
+                        <i style="color: rebeccapurple;" class="bi bi-person-bounding-box fs-1 "></i>
+                    </div>
+
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th scope="col">ইউজার নামঃ</th>
+
+                            <td scope="col">{{ vacData.userName }}</td>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <th scope="row">ইউজার আইডিঃ</th>
+
+                            <td id="bcg-b1">{{ vacData.userId }}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<div class="container p-5 mt-5 mb-5 rounded-3 shadow-lg bg-white">
+    <h1 class="display-4 text-center text-dark pt-5 pb-3">টিকা তথ্য</h1>
+    <div class="table-responsive">
+        <table class="generalInfo table table-bordered text-center align-items-center">
+            <thead>
+            <tr>
+                <th class="text-primary fs-3" scope="col">টিকার নাম</th>
+                <th class="text-primary fs-3" scope="col">১ম ডোজ</th>
+                <th class="text-primary fs-3" scope="col">২য় ডোজ</th>
+                <th class="text-primary fs-3" scope="col">৩য় ডোজ</th>
+                <th class="text-primary fs-3" scope="col">৪র্থ ডোজ</th>
+                <th class="text-primary fs-3" scope="col">৫ম ডোজ</th>
+                <th class="text-primary fs-3" scope="col">টিকা সম্পর্কিত তথ্য</th>
+
+            </tr>
+            </thead>
+            <tbody>
+            <tr class="m-auto">
+                <td class="td-head fs-5" scope="row">বিসিজি</td>
+                <ng-container *ngIf="vacData.vacDateList[0] !== 'Not Given'; else emptyBox">
+                    <td>
+                        <i class="bi bi-check-square-fill fs-4" style="color: rebeccapurple;"></i>
+                        <p class="fs-6 fw-bold">{{ vacData.vacDateList[0] }}</p>
+                    </td>
+                </ng-container>
+                <ng-template #emptyBox>
+                    <td><div class="me-auto ms-auto empty-box"></div></td>
+                </ng-template>
+
+                <td></td>
+
+                <ng-container *ngIf="vacData.vacDateList[1] !== 'Not Given'; else emptyBox">
+                    <td>
+                        <i class="bi bi-check-square-fill fs-4" style="color: rebeccapurple;"></i>
+                        <p class="fs-6 fw-bold">{{ vacData.vacDateList[1] }}</p>
+                    </td>
+                </ng-container>
+                <ng-template #emptyBox>
+                    <td><div class="me-auto ms-auto empty-box"></div></td>
+                </ng-template>
+
+                <td></td>
+                <td></td>
+
+                <td>
+                    <div class="card-footer">
+                        <a href="{% url 'Bcg' %}" class="btn detail-btn">বিস্তারিত জানুন</a>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td class="td-head fs-5" scope="row">পেন্টা (ডিপিটি, হেপ-বি, হিব)</td>
+                <ng-container *ngIf="vacData.vacDateList[2] !== 'Not Given'; else emptyBox">
+                    <td>
+                        <i class="bi bi-check-square-fill fs-4" style="color: rebeccapurple;"></i>
+                        <p class="fs-6 fw-bold">{{ vacData.vacDateList[2] }}</p>
+                    </td>
+                </ng-container>
+                <ng-template #emptyBox>
+                    <td><div class="me-auto ms-auto empty-box"></div></td>
+                </ng-template>
+
+                <ng-container *ngIf="vacData.vacDateList[3] !== 'Not Given'; else emptyBox">
+                    <td>
+                        <i class="bi bi-check-square-fill fs-4" style="color: rebeccapurple;"></i>
+                        <p class="fs-6 fw-bold">{{ vacData.vacDateList[3] }}</p>
+                    </td>
+                </ng-container>
+                <ng-template #emptyBox>
+                    <td><div class="me-auto ms-auto empty-box"></div></td>
+                </ng-template>
+
+                <ng-container *ngIf="vacData.vacDateList[4] !== 'Not Given'; else emptyBox">
+                    <td>
+                        <i class="bi bi-check-square-fill fs-4" style="color: rebeccapurple;"></i>
+                        <p class="fs-6 fw-bold">{{ vacData.vacDateList[4] }}</p>
+                    </td>
+                </ng-container>
+                <ng-template #emptyBox>
+                    <td><div class="me-auto ms-auto empty-box"></div></td>
+                </ng-template>
+
+                <td></td>
+                <td></td>
+                <td>
+                    <div class="card-footer">
+                        <a href="#" class="btn detail-btn">বিস্তারিত জানুন</a>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td class="td-head fs-5" scope="row">ওপিভি</td>
+
+                <ng-container *ngIf="vacData.vacDateList[5] !== 'Not Given'; else emptyBox">
+                    <td>
+                        <i class="bi bi-check-square-fill fs-4" style="color: rebeccapurple;"></i>
+                        <p class="fs-6 fw-bold">{{ vacData.vacDateList[5] }}</p>
+                    </td>
+                </ng-container>
+                <ng-template #emptyBox>
+                    <td><div class="me-auto ms-auto empty-box"></div></td>
+                </ng-template>
+
+
+                <ng-container *ngIf="vacData.vacDateList[6] !== 'Not Given'; else emptyBox">
+                    <td>
+                        <i class="bi bi-check-square-fill fs-4" style="color: rebeccapurple;"></i>
+                        <p class="fs-6 fw-bold">{{ vacData.vacDateList[6] }}</p>
+                    </td>
+                </ng-container>
+                <ng-template #emptyBox>
+                    <td><div class="me-auto ms-auto empty-box"></div></td>
+                </ng-template>
+
+
+                <ng-container *ngIf="vacData.vacDateList[7] !== 'Not Given'; else emptyBox">
+                    <td>
+                        <i class="bi bi-check-square-fill fs-4" style="color: rebeccapurple;"></i>
+                        <p class="fs-6 fw-bold">{{ vacData.vacDateList[7]}}</p>
+                    </td>
+                </ng-container>
+                <ng-template #emptyBox>
+                    <td><div class="me-auto ms-auto empty-box"></div></td>
+                </ng-template>
+
+
+                <td></td>
+                <td></td>
+                <td>
+                    <div class="card-footer">
+                        <a href="#" class="btn detail-btn">বিস্তারিত জানুন</a>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td class="td-head fs-5" scope="row">পিসিভি</td>
+                <ng-container *ngIf="vacData.vacDateList[8] !== 'Not Given'; else emptyBox">
+                    <td>
+                        <i class="bi bi-check-square-fill fs-4" style="color: rebeccapurple;"></i>
+                        <p class="fs-6 fw-bold">{{ vacData.vacDateList[8] }}</p>
+                    </td>
+                </ng-container>
+                <ng-template #emptyBox>
+                    <td><div class="me-auto ms-auto empty-box"></div></td>
+                </ng-template>
+
+                <ng-container *ngIf="vacData.vacDateList[9] !== 'Not Given'; else emptyBox">
+                    <td>
+                        <i class="bi bi-check-square-fill fs-4" style="color: rebeccapurple;"></i>
+                        <p class="fs-6 fw-bold">{{ vacData.vacDateList[9] }}</p>
+                    </td>
+                </ng-container>
+                <ng-template #emptyBox>
+                    <td><div class="me-auto ms-auto empty-box"></div></td>
+                </ng-template>
+
+                <ng-container *ngIf="vacData.vacDateList[10] !== 'Not Given'; else emptyBox">
+                    <td>
+                        <i class="bi bi-check-square-fill fs-4" style="color: rebeccapurple;"></i>
+                        <p class="fs-6 fw-bold">{{ vacData.vacDateList[10] }}</p>
+                    </td>
+                </ng-container>
+                <ng-template #emptyBox>
+                    <td><div class="me-auto ms-auto empty-box"></div></td>
+                </ng-template>
+
+                <td></td>
+                <td></td>
+                <td>
+                    <div class="card-footer">
+                        <a href="#" class="btn detail-btn">বিস্তারিত জানুন</a>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td class="td-head fs-5" scope="row">আইপিভি</td>
+                <ng-container *ngIf="vacData.vacDateList[11] !== 'Not Given'; else emptyBox">
+                    <td>
+                        <i class="bi bi-check-square-fill fs-4" style="color: rebeccapurple;"></i>
+                        <p class="fs-6 fw-bold">{{ vacData.vacDateList[11] }}</p>
+                    </td>
+                </ng-container>
+                <ng-template #emptyBox>
+                    <td><div class="me-auto ms-auto empty-box"></div></td>
+                </ng-template>
+
+                <td></td>
+
+                <ng-container *ngIf="vacData.vacDateList[12] !== 'Not Given'; else emptyBox">
+                    <td>
+                        <i class="bi bi-check-square-fill fs-4" style="color: rebeccapurple;"></i>
+                        <p class="fs-6 fw-bold">{{ vacData.vacDateList[12] }}</p>
+                    </td>
+                </ng-container>
+                <ng-template #emptyBox>
+                    <td><div class="me-auto ms-auto empty-box"></div></td>
+                </ng-template>
+
+                <td></td>
+                <td></td>
+                <td>
+                    <div class="card-footer">
+                        <a href="#" class="btn detail-btn">বিস্তারিত জানুন</a>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td class="td-head fs-5" scope="row">এমআর(হাম ও রুবেলা)</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <ng-container *ngIf="vacData.vacDateList[13] !== 'Not Given'; else emptyBox">
+                    <td>
+                        <i class="bi bi-check-square-fill fs-4" style="color: rebeccapurple;"></i>
+                        <p class="fs-6 fw-bold">{{ vacData.vacDateList[13] }}</p>
+                    </td>
+                </ng-container>
+                <ng-template #emptyBox>
+                    <td><div class="me-auto ms-auto empty-box"></div></td>
+                </ng-template>
+
+                <ng-container *ngIf="vacData.vacDateList[14] !== 'Not Given'; else emptyBox">
+                    <td>
+                        <i class="bi bi-check-square-fill fs-4" style="color: rebeccapurple;"></i>
+                        <p class="fs-6 fw-bold">{{ vacData.vacDateList[14] }}</p>
+                    </td>
+                </ng-container>
+                <ng-template #emptyBox>
+                    <td><div class="me-auto ms-auto empty-box"></div></td>
+                </ng-template>
+                <td>
+                    <div class="card-footer">
+                        <a href="#" class="btn detail-btn">বিস্তারিত জানুন</a>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+
+</div>

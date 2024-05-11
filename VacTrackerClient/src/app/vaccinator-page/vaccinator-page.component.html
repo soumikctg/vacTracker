@@ -1,0 +1,188 @@
+<nav class="navbar navbar-expand-lg bg-body-tertiary">
+    <div class="container-fluid">
+        <a class="navbar-brand ms-3" href="#"><img class="img-fluid navImg" src="assets/images/logo.png"
+                                                   alt="logo"></a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+                aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <div class="me-auto">
+                <h3>ভ্যাকস্ট্যাটাস</h3>
+            </div>
+            <div class="d-flex">
+                <a class="mt-2 active nav-item ms-1 me-4" style="text-decoration: none;" aria-current="page"
+                   routerLink="/"><button class="btn btn-primary">লগ আউট</button></a>
+                <a class="navbar-brand  active " aria-current="page" href="#"><i
+                    class=" fa-regular fa-user"></i></a>
+            </div>
+        </div>
+    </div>
+</nav>
+
+
+
+<div class="container rounded-5 mt-4 p-5" >
+    <div class="container d-flex justify-content-center align-items-center text-dark mt-2 mb-3">
+
+    </div>
+    <div class="row d-flex justify-content-evenly">
+        <div class="col-md-5 col-sm-12">
+            <div class="card rounded-5 shadow-lg px-3 py-2">
+                <div class="card-body table-responsive">
+                    <h1 class="text-center fs-2 mb-3"><i class="bi bi-person-vcard fs-2 me-2"></i>ভ্যাকসিনেটর
+                        প্রোফাইল</h1>
+                    <div class="text-center">
+                        <i style="color: rebeccapurple;" class="bi bi-person-bounding-box fs-1 "></i>
+                    </div>
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th scope="col">ইউজার নামঃ</th>
+
+                            <td scope="col">{{user?.name}}</td>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <th scope="row">ইউজার আইডিঃ</th>
+
+                            <td id="bcg-b1">{{user?.userId}}</td>
+
+                        </tr>
+                        <tr>
+                            <th scope="row">ইউজার ফোনঃ</th>
+
+                            <td id="bcg-b2">{{ user?.phone }}</td>
+
+                        </tr>
+
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="card col-md-5 rounded-5">
+            <div class="card-body">
+                <h2 class="text-center mt-2 fs-2 mb-3"><i class="bi bi-pencil-square fs-2 me-2"></i>টিকা তথ্য আপডেট করুন</h2>
+                <br>
+                <form [formGroup]="form" (submit)="search()">
+                    <div class="input-group pt-5">
+                        <input formControlName="userId" type="text" class="form-control fs-5 rounded-5 mx-5 border-3"
+                               placeholder="ইউজার খুজুন">
+                    </div>
+                    <div class="input-group text-center d-flex justify-content-center">
+                        <button class="btn rounded-5 border-3 p-2 px-5 mt-3" style="color: white;"
+                                type="submit">খুজুন</button>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+
+
+
+
+<div class="container bg-white mt-5 p-3 rounded-5 shadow-lg mb-5">
+    <div class="container d-flex justify-content-center align-items-center text-dark mt-2 mb-3">
+        <h1 class="fs-1">ভ্যাকসিন তথ্য</h1>
+    </div>
+
+    <div class="container-fluid min-vh-100 d-flex justify-content-center align-items-center">
+
+        <div class="container-fluid text-center">
+            <div class="row gx-4 gy-5 mb-4 px-4">
+                <div class="col-lg-4 col-md-6 col-sm-12">
+                    <div class="card h-100 shadow">
+                        <h2 class="card-title card-header fs-3">বিসিজি</h2>
+                        <div class="card-body table-responsive">
+                            <p>ব্যাসিলাস ক্যালমেট-গুয়েরিন টিকা হল একটি টিকা যা প্রধানত যক্ষ্মার বিরুদ্ধে ব্যবহার
+                                করা হয়। যে সব দেশে যক্ষ্মার প্রাদুর্ভাব আছে, সেখানে সুস্থ শিশুদেরকে জন্মের সময়ের
+                                যতটা সম্ভব কাছাকাছি সময়ে একটি ডোজ দেওয়ার সুপারিশ করা হয়। এইচআইভি/এইডস থাকা
+                                শিশুদের টিকা দেওয়া উচিত নয়।</p>
+
+                        </div>
+                        <div class="card-footer">
+                            <a  href="{% url 'Bcg' %}" class="btn detail-btn">বিস্তারিত জানুন</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6 col-sm-12">
+                    <div class="card h-100 shadow">
+                        <h2 class="card-title card-header fs-3">পেন্টা (ডিপিটি, হেপ-বি, হিব)</h2>
+                        <div class="card-body table-responsive">
+                            <p>পেন্টাভ্যালেন্ট ভ্যাকসিন একটি শিশুকে 5টি প্রাণঘাতী রোগ থেকে সুরক্ষা প্রদান করে
+                                ডিপথেরিয়া, পারটুসিস, টিটেনাস, হেপাটাইটিস বি এবং হিব। হিব ভ্যাকসিন একটি নতুন সংযোজন।
+                                একসাথে, সমন্বয়কে বলা হয় পেন্টাভ্যালেন্ট।</p>
+                        </div>
+                        <div class="card-footer">
+                            <a href="#" class="btn detail-btn">বিস্তারিত জানুন</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6 col-sm-12">
+                    <div class="card h-100 shadow">
+                        <h2 class="card-title card-header fs-3">ওপিভি</h2>
+                        <div class="card-body table-responsive">
+                            <p>জন্মের সময় একটি শিশুকে ওরাল পোলিও ভ্যাকসিন (ওপিভি) এর প্রথম ডোজ দেওয়া হয়। ওপিভি এর
+                                জন্মের ডোজ অনুসরণ করে, ইনজেক্টেবল ইনঅ্যাক্টিভেটেড পোলিও ভাইরাস (আইপিভি)-যুক্ত টিকা
+                                গুরুত্বপূর্ণ এবং নিয়মিতভাবে 6 সপ্তাহের পর থেকে শিশুর জন্য সুপারিশ করা হয়। এই
+                                আইপিভি-যুক্ত ভ্যাকসিনগুলি স্বতন্ত্র বা সংমিশ্রণে পাওয়া যায়।</p>
+                        </div>
+                        <div class="card-footer">
+                            <a href="#" class="btn detail-btn">বিস্তারিত জানুন</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6 col-sm-12">
+                    <div class="card  h-100 shadow">
+                        <h2 class="card-title card-header fs-3">পিসিভি</h2>
+                        <div class="card-body  table-responsive">
+                            <p>নিউমোকোকাল কনজুগেট ভ্যাকসিন হল একটি নিউমোকোকাল ভ্যাকসিন এবং একটি কনজুগেট ভ্যাকসিন যা
+                                স্ট্রেপ্টোকক্কাস নিউমোনিয়া ব্যাকটেরিয়া দ্বারা সৃষ্ট রোগ থেকে শিশু, ছোট বাচ্চা এবং
+                                প্রাপ্তবয়স্কদের রক্ষা করতে ব্যবহৃত হয়।</p>
+                        </div>
+                        <div class="card-footer">
+                            <a href="#" class="btn detail-btn">বিস্তারিত জানুন</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6 col-sm-12">
+                    <div class="card  h-100 shadow">
+                        <h2 class="card-title card-header fs-3">আইপিভি</h2>
+                        <div class="card-body  table-responsive">
+                            <p>জন্মের সময় একটি শিশুকে ওরাল পোলিও ভ্যাকসিন (ওপিভি) এর প্রথম ডোজ দেওয়া হয়। ওপিভি এর
+                                জন্মের ডোজ অনুসরণ করে, ইনজেক্টেবল ইনঅ্যাক্টিভেটেড পোলিও ভাইরাস (আইপিভি)-যুক্ত টিকা
+                                গুরুত্বপূর্ণ এবং নিয়মিতভাবে 6 সপ্তাহের পর থেকে শিশুর জন্য সুপারিশ করা হয়। এই
+                                আইপিভি-যুক্ত ভ্যাকসিনগুলি স্বতন্ত্র বা সংমিশ্রণে পাওয়া যায়।</p>
+                        </div>
+                        <div class="card-footer">
+                            <a href="#" class="btn detail-btn">বিস্তারিত জানুন</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6 col-sm-12">
+                    <div class="card h-100 shadow">
+                        <h2 class="card-title card-header fs-3">এমআর(হাম ও রুবেলা)</h2>
+                        <div class="card-body table-responsive">
+                            <p>হাম ভাইরাসজনিত মারাত্মক একটি সংক্রামক রোগ। আক্রান্ত রোগীর হাঁচি-কাশির মাধ্যমে এ রোগ
+                                অতি দ্রুত ছড়ায়। এসব রোগ থেকে শিশুকে বাঁচানোর উপায় হচ্ছে সঠিক সময়ে তাকে টিকা দেওয়া। এ
+                                রোগের প্রকোপ থেকে শিশুকে বাঁচানোর জন্য নিয়মিত টিকাদান কর্মসূচিতে নয় মাস বয়সী শিশুদের
+                                জন্য এক ডোজ এমআর টিকা যুক্ত হয়েছে।</p>
+
+                        </div>
+                        <div class="card-footer">
+                            <a href="#" class="btn detail-btn">বিস্তারিত জানুন</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

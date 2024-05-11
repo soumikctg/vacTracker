@@ -1,0 +1,212 @@
+<nav class="navbar navbar-expand-lg bg-body-tertiary">
+    <div class="container-fluid">
+        <a class="navbar-brand ms-3" href="#"><img class="img-fluid navImg" src="assets/images/logo.png"
+                                                   alt="logo"></a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+                aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <div class="me-auto">
+                <h3>ভ্যাকস্ট্যাটাস</h3>
+            </div>
+            <div class="d-flex">
+                <a class="mt-2 active nav-item ms-1 me-4" style="text-decoration:none"
+                >
+                    <button (click)="logout()" class="btn btn-primary">লগ আউট</button>
+                </a>
+                <a class="navbar-brand  active " aria-current="page" href="#"><i
+                    class=" fa-regular fa-user"></i></a>
+
+            </div>
+        </div>
+    </div>
+</nav>
+
+<div class="container shadow-lg bg-white rounded-3 mt-5 p-5">
+    <div class="container d-flex justify-content-center align-items-center text-dark mt-2 mb-3">
+        <h1 class="fs-1 mb-3"><i class="bi bi-person-vcard fs-1 me-2"></i>ইউজার প্রোফাইল</h1>
+    </div>
+    <div class="row d-flex justify-content-evenly">
+        <div class="col-md-5 col-sm-12">
+            <div class="card h-100 shadow px-3 py-2">
+
+                <div class="card-body table-responsive">
+                    <div class="text-center">
+                        <i class="bi bi-person-bounding-box fs-1 "></i>
+                    </div>
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th scope="col">ইউজার নামঃ</th>
+
+                            <td scope="col">{{ vacUpdate$?.userName }}</td>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <th scope="row">ইউজার আইডিঃ</th>
+
+                            <td id="bcg-b1">{{ vacUpdate$?.userId }}</td>
+
+                        </tr>
+                        <tr>
+                            <th scope="row">ইউজার ফোনঃ</th>
+
+                            <td id="bcg-b2">{{ vacUpdate$?.phone }}</td>
+
+                        </tr>
+
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+        <div class="col-md-5 col-sm-12">
+            <div class="card h-100 shadow px-3 py-2">
+
+                <div class="card-body text-center py-5">
+                    <a href="{% url 'VaccineCard' row2.0.0 %}">
+                        <button class="btn detail-btn text-white px-3 py-2 rounded-3 shadow-sm fs-5 mb-3"><i
+                            class="bi bi-download fs-5 me-1"></i>টিকা কার্ড ডাউনলোড করুন
+                        </button>
+                    </a>
+                    <a href="{% url 'GeneratePdf' row2.0.0 %}">
+                        <button class="btn detail-btn text-white px-3 py-2 rounded-3 shadow-sm fs-5"><i
+                            class="bi bi-download fs-5 me-1"></i>টিকা সনদ ডাউনলোড করুন
+                        </button>
+                    </a>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container mt-5 mb-5 rounded-3 shadow-lg bg-white">
+    <h1 class="display-4 text-center text-dark pt-5 pb-3">টিকা তথ্য আপডেট করুন</h1>
+    <form [formGroup]="form" (submit)="submit()">
+        <div class="table-responsive">
+            <table class="table table-bordered text-center align-items-center">
+                <thead>
+                <tr>
+                    <th class="text-primary fs-3" scope="col">টিকার নাম</th>
+                    <th class="text-primary fs-3" scope="col">১ম ডোজ</th>
+                    <th class="text-primary fs-3" scope="col">২য় ডোজ</th>
+                    <th class="text-primary fs-3" scope="col">৩য় ডোজ</th>
+                    <th class="text-primary fs-3" scope="col">৪র্থ ডোজ</th>
+                    <th class="text-primary fs-3" scope="col">৫ম ডোজ</th>
+                    <th class="text-primary fs-3" scope="col">টিকা সম্পর্কিত তথ্য</th>
+                </tr>
+
+                </thead>
+                <tbody>
+                <tr class="m-auto">
+                    <td class="td-head fs-5" scope="row">বিসিজি</td>
+                    <td>
+                        <input class="form-check-input" type="checkbox"
+                               formControlName="BCG1" >
+                    </td>
+                    <td></td>
+                    <td>
+                        <input class="form-check-input" type="checkbox"
+                               formControlName="BCG2">
+                    </td>
+                    <td></td>
+                    <td></td>
+                    <td>
+                        <div class="card-footer">
+                            <a href="" class="btn detail-btn">বিস্তারিত জানুন</a>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="td-head fs-5" scope="row">পেন্টা (ডিপিটি, হেপ-বি, হিব)</td>
+                    <td><input class="form-check-input" type="checkbox"
+                               formControlName="PENTA1"></td>
+                    <td><input class="form-check-input" type="checkbox"
+                               formControlName="PENTA2"></td>
+                    <td><input class="form-check-input" type="checkbox"
+                               formControlName="PENTA3"></td>
+                    <td></td>
+                    <td></td>
+                    <td>
+                        <div class="card-footer">
+                            <a href="#" class="btn detail-btn">বিস্তারিত জানুন</a>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="td-head fs-5" scope="row">ওপিভি</td>
+                    <td><input class="form-check-input" type="checkbox"
+                               formControlName="OPV1"></td>
+                    <td><input class="form-check-input" type="checkbox"
+                               formControlName="OPV2"></td>
+                    <td><input class="form-check-input" type="checkbox"
+                               formControlName="OPV3"></td>
+                    <td></td>
+                    <td></td>
+                    <td>
+                        <div class="card-footer">
+                            <a href="#" class="btn detail-btn">বিস্তারিত জানুন</a>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="td-head fs-5" scope="row">পিসিভি</td>
+                    <td><input class="form-check-input" type="checkbox"
+                               formControlName="PCV1"></td>
+                    <td><input class="form-check-input" type="checkbox"
+                               formControlName="PCV2"></td>
+                    <td><input class="form-check-input" type="checkbox"
+                               formControlName="PCV3"></td>
+                    <td></td>
+                    <td></td>
+                    <td>
+                        <div class="card-footer">
+                            <a href="#" class="btn detail-btn">বিস্তারিত জানুন</a>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="td-head fs-5" scope="row">আইপিভি</td>
+                    <td><input class="form-check-input" type="checkbox"
+                               formControlName="IPV1"></td>
+                    <td></td>
+                    <td><input class="form-check-input" type="checkbox"
+                               formControlName="IPV2"></td>
+                    <td></td>
+                    <td></td>
+                    <td>
+                        <div class="card-footer">
+                            <a href="#" class="btn detail-btn">বিস্তারিত জানুন</a>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="td-head fs-5" scope="row">এমআর(হাম ও রুবেলা)</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td><input class="form-check-input" type="checkbox"
+                               formControlName="MR1"></td>
+                    <td><input class="form-check-input" type="checkbox"
+                               formControlName="MR2"></td>
+                    <td>
+                        <div class="card-footer">
+                            <a href="#" class="btn detail-btn">বিস্তারিত জানুন</a>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="text-center pt-2 pb-3">
+            <button class="custom-btn-white btn detail-btn btn-lg px-5" type="submit">সাবমিট</button>
+        </div>
+    </form>
+
+</div>
