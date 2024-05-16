@@ -20,10 +20,13 @@ export class RegistrationComponent implements OnInit{
     }
     ngOnInit(): void {
         this.registerForm = this.formBuilder.group({
+            userId: new FormControl(''),
             name: new FormControl(''),
             phone: new FormControl(''),
             userType: new FormControl(''),
-            password: new FormControl('')
+            password: new FormControl(''),
+            nid: new FormControl(''),
+            address: new FormControl(''),
         });
     }
 

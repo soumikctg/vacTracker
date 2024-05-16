@@ -3,6 +3,7 @@ import {FormBuilder, FormControl} from "@angular/forms";
 import {HttpClient} from "@angular/common/http";
 import {Router} from "@angular/router";
 import {VaccineService} from "../services/vaccine.service";
+import {ToastrService} from "ngx-toastr";
 
 @Component({
   selector: 'app-home',
@@ -15,12 +16,13 @@ export class HomeComponent implements OnInit{
     constructor(private formBuilder:FormBuilder,
                 private http:HttpClient,
                 private router: Router,
-                private vaccineService: VaccineService
+                private vaccineService: VaccineService,
+                private toastrService: ToastrService
     ) {
     }
     ngOnInit(): void {
         this.loginForm = this.formBuilder.group({
-            phone: new FormControl(''),
+            userId: new FormControl(''),
             password: new FormControl('')
         })
 
@@ -32,20 +34,22 @@ export class HomeComponent implements OnInit{
     login(){
         this.http.post('http://localhost:8000/api/login', this.loginForm.getRawValue(), {withCredentials:true})
             .subscribe((response: any) => {
+                console.log(response);
                 const userType = response.userType;
-                if (userType === 'vaccinRecipient') {
+                if (userType === 'vaccineRecipient') {
                     this.router.navigate(['/user']);
                 } else {
                     this.router.navigate(['/vaccinator']);
                 }
             }, (error) => {
-                console.error('Login failed:', error);
+                this.toastrService.error(error.error.detail, 'Login failed');
+                console.error('Login failed:', error.error.detail);
             });
     }
 
     search() {
-        const formData = this.form.getRawValue();
-        this.vaccineService.searchVacInfoWithoutLogin(formData);
+        const formData = this.form.getRawValue()
+        this.vaccineService.searchVacInfoWithoutLogin(formData)
     }
 
 }

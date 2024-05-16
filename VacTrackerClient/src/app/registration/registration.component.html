@@ -14,12 +14,24 @@
                 <form [formGroup]="registerForm" (submit)="register()">
                     <h2 class="text-center mb-5">রেজিস্ট্রেশন</h2>
                     <div class="input-field d-flex flex-column mb-3">
+                        <input formControlName="userId" type="text" class="form-control input rounded-2 p-1 border-3"
+                               placeholder="ইউজার আইডি" required autocomplete="off">
+                    </div>
+                    <div class="input-field d-flex flex-column mb-3">
                         <input formControlName="name" type="text" class="form-control input rounded-2 p-1 border-3"
                                placeholder="নাম" required autocomplete="off">
                     </div>
                     <div class="input-field d-flex flex-column mb-3">
                         <input formControlName="phone" type="text" class="form-control input rounded-2 p-1 border-3"
                                placeholder="ফোন নাম্বার" required autocomplete="off">
+                    </div>
+                    <div class="input-field d-flex flex-column mb-3">
+                        <input formControlName="nid" type="text" class="form-control input rounded-2 p-1 border-3"
+                               placeholder="জাতীয় পরিচয় পত্র নাম্বার" required autocomplete="off">
+                    </div>
+                    <div class="input-field d-flex flex-column mb-3">
+                        <input formControlName="address" type="text" class="form-control input rounded-2 p-1 border-3"
+                               placeholder="ঠিকানা" required autocomplete="off">
                     </div>
                     <div class="input-field d-flex flex-column mb-3">
                         <select formControlName="userType" class="form-control input rounded-2 p-1 border-3"required>

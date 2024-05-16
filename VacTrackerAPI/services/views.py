@@ -1,54 +1,81 @@
-from django.db import connection
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 from rest_framework import status
-from rest_framework.exceptions import APIException, AuthenticationFailed
+from rest_framework.exceptions import AuthenticationFailed
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from services.helper_functions import EncryptionHelper, NodeAPIClient, random_key, url, generate_jwt_token
 from services.models import User, UserVaccineDetails
 from services.serializers import UserSerializer
-import jwt, datetime
+import jwt
+from services.aes_cipher import AESCipher
 
 
 # Create your views here.
 class RegisterView(APIView):
     def post(self, request):
-        serializer = UserSerializer(data=request.data)
+        data = request.data.copy()
+        userId = data.get('userId')
+        password = data.get('password')
+        phone = data.get('phone')
+        nid = data.get('nid')
+        address = data.get('address')
+
+        randomKey = random_key()
+        base_url = url()
+
+        # Encrypt the data
+        encrypted_data = EncryptionHelper.encrypt_data(data, randomKey)
+        data.update(encrypted_data)
+
+        # Validate and save the user data
+        serializer = UserSerializer(data=data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
-        return Response(serializer.data)
+
+        # Handle the external API call to post the user key
+        node_api_client = NodeAPIClient(base_url)
+        response_data, response_status = node_api_client.post_encryption_key(userId, randomKey)
+
+        return Response(response_data, status=response_status)
 
 
 class LoginView(APIView):
     def post(self, request):
-        phone = request.data['phone']
-        password = request.data['password']
+        data = request.data
+        userId = data.get('userId')
+        password = data.get('password')
 
-        user = User.objects.filter(phone=phone).first()
-        if user is None:
+        if not userId or not password:
+            raise AuthenticationFailed('Please provide both userId and password')
+
+        user = User.objects.filter(userId=userId).first()
+
+        if not user:
             raise AuthenticationFailed('User not found')
 
-        if not user.check_password(password):
+        base_url = url()
+        node_api_client = NodeAPIClient(base_url)
+        randomKey = node_api_client.get_encryption_key(userId)
+
+        if not randomKey:
+            raise AuthenticationFailed('Encryption key not found')
+
+        aes = AESCipher(randomKey)
+        decrypted_password = aes.decrypt(user.password)
+
+        if password != decrypted_password:
             raise AuthenticationFailed('Incorrect password')
 
-        payload = {
-            'userId': user.userId,
-            'exp': datetime.datetime.now(datetime.UTC) + datetime.timedelta(days=1),
-            'iat': datetime.datetime.now(datetime.UTC),
-        }
+        token = generate_jwt_token(user.userId)
 
-        token = jwt.encode(payload, 'secret', algorithm='HS256')
-        decode = jwt.decode(token, 'secret', algorithms=['HS256'])
-
-        response = Response()
-
-        response.set_cookie(key='jwt', value=token)
-
-        response.data = {
+        response = Response({
             'message': 'You are logged in',
             'jwt': token,
             'userType': user.userType,
-        }
+        })
+
+        response.set_cookie(key='jwt', value=token)
 
         return response
 
@@ -66,47 +93,60 @@ class LogoutView(APIView):
 
 class UserDataView(APIView):
     def get(self, request):
+        base_url = url()
         token = request.COOKIES.get('jwt')
-        if token is None:
+
+        if not token:
             raise AuthenticationFailed('Unauthenticated')
 
         try:
             payload = jwt.decode(token, 'secret', algorithms=['HS256'])
-
         except jwt.ExpiredSignatureError:
             raise AuthenticationFailed('Invalid token')
 
         user = User.objects.filter(userId=payload['userId']).first()
-        serializer = UserSerializer(user)
 
-        return Response(serializer.data)
+        if not user:
+            raise AuthenticationFailed('User not found')
+
+        node_api_client = NodeAPIClient(base_url)
+        try:
+            randomKey = node_api_client.get_encryption_key(user.userId)
+        except ValueError as e:
+            raise AuthenticationFailed(str(e))
+
+        aes = AESCipher(randomKey)
+
+        serializer = UserSerializer(user)
+        data = serializer.data.copy()
+
+        # Decrypt fields if they exist
+        for field in ['phone', 'nid', 'address']:
+            if data.get(field):
+                data[field] = aes.decrypt(data[field])
+
+        return Response(data)
 
 
 class UserVaccineView(APIView):
     def get(self, request):
-
         token = request.COOKIES.get('jwt')
         if token is None:
             raise AuthenticationFailed('Unauthenticated')
 
         try:
             payload = jwt.decode(token, 'secret', algorithms=['HS256'])
-
         except jwt.ExpiredSignatureError:
             raise AuthenticationFailed('Invalid token')
 
-        user_id = payload['userId']
+        user_id = payload.get('userId')
         if not user_id:
-            return Response({"message": "UnAuthenticated"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"message": "Unauthenticated"}, status=status.HTTP_400_BAD_REQUEST)
 
-        with connection.cursor() as cursor:
-            cursor.execute(
-                'SELECT Vaccine_given_date, Vaccine_id_id FROM services_uservaccinedetails WHERE User_id_id = %s',
-                [user_id]
-            )
+        # Fetch vaccine details using Django ORM
+        vaccine_details = UserVaccineDetails.objects.filter(user_id=user_id).values('vaccine_given_date', 'vaccine_id')
 
-            vac = cursor.fetchall()
-
+        # Mapping for vaccine types
         vaccine_mapping = {
             "BCG1": 0,
             "BCG2": 1,
@@ -127,11 +167,12 @@ class UserVaccineView(APIView):
 
         vac_date_list = ["Not Given"] * 15
 
-        for val in vac:
-            vaccine_id = val[1]
+        for detail in vaccine_details:
+            vaccine_id = detail['vaccine_id']
             if vaccine_id in vaccine_mapping:
                 index = vaccine_mapping[vaccine_id]
-                vac_date_list[index] = val[0]
+                vac_date_list[index] = detail['vaccine_given_date']
+
         data = {
             'vacDateList': vac_date_list
         }
@@ -140,56 +181,48 @@ class UserVaccineView(APIView):
 
 class VacInfoWithoutLoginView(APIView):
     def post(self, request):
-        userid = request.data['userId']
-        user = get_object_or_404(User, userId=userid)
-        with connection.cursor() as cursor:
-            cursor.execute(
-                'SELECT Vaccine_given_date, Vaccine_id_id FROM services_uservaccinedetails WHERE User_id_id = %s',
-                [userid]
-            )
-            vac = cursor.fetchall()
+        user_id = request.data.get('userId')
+        if not user_id:
+            return Response({"error": "User ID is required"}, status=status.HTTP_400_BAD_REQUEST)
+
+        user = get_object_or_404(User, userId=user_id)
+
+        vaccine_details = UserVaccineDetails.objects.filter(User_id_id=user_id).values('Vaccine_given_date', 'Vaccine_id')
+
+        # Mapping for vaccine types
+        vaccine_mapping = {
+            "BCG1": 0,
+            "BCG2": 1,
+            "PENTA1": 2,
+            "PENTA2": 3,
+            "PENTA3": 4,
+            "OPV1": 5,
+            "OPV2": 6,
+            "OPV3": 7,
+            "PCV1": 8,
+            "PCV2": 9,
+            "PCV3": 10,
+            "IPV1": 11,
+            "IPV2": 12,
+            "MR1": 13,
+            "MR2": 14,
+        }
 
         vac_date_list = ["Not Given"] * 15
-        for val in vac:
-            if (val[1] == "BCG1"):
-                vac_date_list[0] = val[0]
-            elif (val[1] == "BCG2"):
-                vac_date_list[1] = val[0]
-            elif (val[1] == "PENTA1"):
-                vac_date_list[2] = val[0]
-            elif (val[1] == "PENTA2"):
-                vac_date_list[3] = val[0]
-            elif (val[1] == "PENTA3"):
-                vac_date_list[4] = val[0]
-            elif (val[1] == "OPV1"):
-                vac_date_list[5] = val[0]
-            elif (val[1] == "OPV2"):
-                vac_date_list[6] = val[0]
-            elif (val[1] == "OPV3"):
-                vac_date_list[7] = val[0]
-            elif (val[1] == "PCV1"):
-                vac_date_list[8] = val[0]
-            elif (val[1] == "PCV2"):
-                vac_date_list[9] = val[0]
-            elif (val[1] == "PCV3"):
-                vac_date_list[10] = val[0]
-            elif (val[1] == "IPV1"):
-                vac_date_list[11] = val[0]
-            elif (val[1] == "IPV2"):
-                vac_date_list[12] = val[0]
-            elif (val[1] == "MR1"):
-                vac_date_list[13] = val[0]
-            elif (val[1] == "MR2"):
-                vac_date_list[14] = val[0]
 
-        response = Response()
-        response.data = {
+        for detail in vaccine_details:
+            vaccine_id = detail['Vaccine_id']
+            if vaccine_id in vaccine_mapping:
+                index = vaccine_mapping[vaccine_id]
+                vac_date_list[index] = detail['Vaccine_given_date']
+
+        response_data = {
             'userId': user.userId,
             'userName': user.name,
             'vacDateList': vac_date_list
         }
 
-        return response
+        return Response(response_data)
 
 
 class VaccinatorView(APIView):
@@ -200,66 +233,66 @@ class VaccinatorView(APIView):
 
         try:
             payload = jwt.decode(token, 'secret', algorithms=['HS256'])
-
         except jwt.ExpiredSignatureError:
             raise AuthenticationFailed('Invalid token')
+
+        vaccinator_id = payload.get('userId')
+        vaccinator = get_object_or_404(User, userId=vaccinator_id)
+
+        if vaccinator.userType != 'vaccinator':
+            raise AuthenticationFailed('Unauthenticated')
+
+        user_id = request.data.get('userId')
+        user = get_object_or_404(User, userId=user_id)
+
+        vaccine_details = UserVaccineDetails.objects.filter(User_id_id=user_id).values_list('Vaccine_id', flat=True)
+
+        # Mapping for vaccine types
+        vaccine_mapping = {
+            "BCG1": 0,
+            "BCG2": 1,
+            "PENTA1": 2,
+            "PENTA2": 3,
+            "PENTA3": 4,
+            "OPV1": 5,
+            "OPV2": 6,
+            "OPV3": 7,
+            "PCV1": 8,
+            "PCV2": 9,
+            "PCV3": 10,
+            "IPV1": 11,
+            "IPV2": 12,
+            "MR1": 13,
+            "MR2": 14,
+        }
+
+        boolean_list = [False] * 15
+        for vaccine_id in vaccine_details:
+            if vaccine_id in vaccine_mapping:
+                index = vaccine_mapping[vaccine_id]
+                boolean_list[index] = True
+
+        # Fetch encryption key
+        base_url = url()
+        node_api_client = NodeAPIClient(base_url)
         try:
-            vaccinatorid = payload['userId']
-            vaccinator = get_object_or_404(User, userId=vaccinatorid)
-            if vaccinator.userType == 'vaccinator':
-                userid = request.data['userId']
-                user = get_object_or_404(User, userId=userid)
-                with connection.cursor() as cursor:
-                    cursor.execute('SELECT Vaccine_id_id FROM services_uservaccinedetails WHERE User_id_id = %s',
-                                   [userid])
-                    vac = cursor.fetchall()
-                    boolean_list1 = [False] * 15
-                    for val in vac:
-                        if (val[0] == "BCG1"):
-                            boolean_list1[0] = True
-                        elif (val[0] == "BCG2"):
-                            boolean_list1[1] = True
-                        elif (val[0] == "PENTA1"):
-                            boolean_list1[2] = True
-                        elif (val[0] == "PENTA2"):
-                            boolean_list1[3] = True
-                        elif (val[0] == "PENTA3"):
-                            boolean_list1[4] = True
-                        elif (val[0] == "OPV1"):
-                            boolean_list1[5] = True
-                        elif (val[0] == "OPV2"):
-                            boolean_list1[6] = True
-                        elif (val[0] == "OPV3"):
-                            boolean_list1[7] = True
-                        elif (val[0] == "PCV1"):
-                            boolean_list1[8] = True
-                        elif (val[0] == "PCV2"):
-                            boolean_list1[9] = True
-                        elif (val[0] == "PCV3"):
-                            boolean_list1[10] = True
-                        elif (val[0] == "IPV1"):
-                            boolean_list1[11] = True
-                        elif (val[0] == "IPV2"):
-                            boolean_list1[12] = True
-                        elif (val[0] == "MR1"):
-                            boolean_list1[13] = True
-                        elif (val[0] == "MR2"):
-                            boolean_list1[14] = True
-
-                    response = Response()
-                    response.data = {
-                        'userName': user.name,
-                        'userId': user.userId,
-                        'phone': user.phone,
-                        'boolean_list': boolean_list1
-                    }
-                    return response
-
-            else:
-                raise AuthenticationFailed('Unauthenticated')
-
-        except Exception as e:
+            random_key = node_api_client.get_encryption_key(user.userId)
+        except ValueError as e:
             return JsonResponse({"message": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+        aes = AESCipher(random_key)
+        phone = user.phone
+        if phone:
+            phone = aes.decrypt(phone)
+
+        response_data = {
+            'userName': user.name,
+            'userId': user.userId,
+            'phone': phone,
+            'boolean_list': boolean_list
+        }
+
+        return Response(response_data)
 
 
 class VacUpdateView(APIView):
@@ -270,47 +303,55 @@ class VacUpdateView(APIView):
 
         try:
             payload = jwt.decode(token, 'secret', algorithms=['HS256'])
-
         except jwt.ExpiredSignatureError:
             raise AuthenticationFailed('Invalid token')
+        except jwt.InvalidTokenError:
+            raise AuthenticationFailed('Invalid token')
+
+        vaccinator_id = payload.get('userId')
+        vaccinator = get_object_or_404(User, userId=vaccinator_id)
+
+        if vaccinator.userType != 'vaccinator':
+            raise AuthenticationFailed('Unauthorized access')
+
+        selected_checkboxes = request.data.get('checkboxes')
+        user_id = request.data.get('userId')
+
+        if not selected_checkboxes or not user_id:
+            return Response({"error": "Invalid input"}, status=status.HTTP_400_BAD_REQUEST)
+
+        vaccine_mapping = {
+            "BCG1": "BCG1",
+            "BCG2": "BCG2",
+            "PENTA1": "PENTA1",
+            "PENTA2": "PENTA2",
+            "PENTA3": "PENTA3",
+            "OPV1": "OPV1",
+            "OPV2": "OPV2",
+            "OPV3": "OPV3",
+            "PCV1": "PCV1",
+            "PCV2": "PCV2",
+            "PCV3": "PCV3",
+            "IPV1": "IPV1",
+            "IPV2": "IPV2",
+            "MR1": "MR1",
+            "MR2": "MR2"
+        }
+
         try:
-            vaccinatorid = payload['userId']
-            vaccinator = get_object_or_404(User, userId=vaccinatorid)
-            if vaccinator.userType == 'vaccinator':
-                selected_checkboxes = request.data['checkboxes']
-                userid = request.data['userId']
+            for val in selected_checkboxes:
+                vaccine_id = vaccine_mapping.get(val)
+                if vaccine_id:
+                    user_vaccine_details, created = UserVaccineDetails.objects.get_or_create(
+                        User_id_id=user_id,
+                        Vaccine_id_id=vaccine_id,
+                        defaults={'Vaccinator_id': vaccinator_id}
+                    )
+                    if not created:
+                        # Optionally, you can handle cases where the record already exists
+                        continue
 
-                vaccine_mapping = {
-                    "BCG1": "BCG1",
-                    "BCG2": "BCG2",
-                    "PENTA1": "PENTA1",
-                    "PENTA2": "PENTA2",
-                    "PENTA3": "PENTA3",
-                    "OPV1": "OPV1",
-                    "OPV2": "OPV2",
-                    "OPV3": "OPV3",
-                    "PCV1": "PCV1",
-                    "PCV2": "PCV2",
-                    "PCV3": "PCV3",
-                    "IPV1": "IPV1",
-                    "IPV2": "IPV2",
-                    "MR1": "MR1",
-                    "MR2": "MR2"
-                }
-
-                for val in selected_checkboxes:
-                    if val in vaccine_mapping:
-                        vaccineid = vaccine_mapping[val]
-                        user_vaccine_details = UserVaccineDetails.objects.filter(User_id_id=userid,
-                                                                                 Vaccine_id_id=vaccineid)
-                        if not user_vaccine_details.exists():
-                            new_record = UserVaccineDetails(Vaccinator_id=vaccinatorid, User_id_id=userid, Vaccine_id_id=vaccineid)
-                            new_record.save()
-
-                return Response({"message": "Data saved successfully"}, status=status.HTTP_201_CREATED)
-            else:
-                raise AuthenticationFailed('Unauthenticated')
-
+            return Response({"message": "Data saved successfully"}, status=status.HTTP_201_CREATED)
         except Exception as e:
             print("Error:", e)
-            return Response({"error": "An error occurred"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response({"error": "An error occurred while saving data"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

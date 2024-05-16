@@ -1,5 +1,5 @@
 /* You can add global styles to this file, and also import other style files */
-
+@import 'ngx-toastr/toastr';
 body{
   font-family: 'Poppins', sans-serif;
   font-family: 'Tiro Bangla', serif;
@@ -174,3 +174,8 @@ a{
 }
 
 
+.toast-bottom-right {
+  bottom: 12px;
+  right: 12px;
+  position: fixed;
+}

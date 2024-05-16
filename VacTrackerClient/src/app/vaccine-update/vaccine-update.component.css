@@ -76,3 +76,8 @@ td{
     width: 4.5rem;
 
 }
+.toast-bottom-right {
+  bottom: 12px;
+  right: 12px;
+  position: fixed!important;
+}

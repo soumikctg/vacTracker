@@ -1,10 +1,8 @@
 import { Injectable } from '@angular/core';
 import {HttpClient} from "@angular/common/http";
-import {BehaviorSubject, map, Observable} from "rxjs";
-import {VacdataModel} from "../models/vacData.model";
-import {UserModel} from "../models/user.model";
-import {response} from "express";
+import {BehaviorSubject, Observable} from "rxjs";
 import {Router} from "@angular/router";
+import {ToastrService} from "ngx-toastr";
 
 @Injectable({
   providedIn: 'root'
@@ -16,7 +14,8 @@ export class VaccineService {
     vacData: any;
 
     constructor(private http: HttpClient,
-                private router: Router) { }
+                private router: Router,
+                private toastrService: ToastrService) { }
 
     logout(): Observable<any> {
         return this.http.post('http://localhost:8000/api/logout', {}, { withCredentials: true });
@@ -36,6 +35,7 @@ export class VaccineService {
                 this.router.navigate(['/vacInfoWithoutLogin']);
             },
             (error) => {
+              this.toastrService.error(error.error.detail, 'Search failed');
                 console.error('Search failed:', error);
             }
         );
@@ -56,6 +56,7 @@ export class VaccineService {
                 this.router.navigate(['/vacUpdate']);
             },
             error => {
+              this.toastrService.error(error.error.detail, 'User Not Found');
                 console.error('Error retrieving data:', error);
             }
         );
@@ -67,9 +68,11 @@ export class VaccineService {
     updateVaccine(data: any) {
         this.http.post('http://localhost:8000/api/vacUpdate', data, {withCredentials:true}).subscribe(
             () => {
+              this.toastrService.success('Vaccine Update successful');
                 this.router.navigate(['/vacUpdatePage']);
             },
             (error) => {
+              this.toastrService.error(error.error.detail, 'Vaccine Update failed');
                 console.error('Vaccine Update failed:', error);
             }
         );

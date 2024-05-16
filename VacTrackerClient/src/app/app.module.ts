@@ -12,6 +12,8 @@ import { UserPageComponent } from './user-page/user-page.component';
 import { VaccinatorPageComponent } from './vaccinator-page/vaccinator-page.component';
 import { VaccineWithoutLoginComponent } from './vaccine-without-login/vaccine-without-login.component';
 import { VaccineUpdateComponent } from './vaccine-update/vaccine-update.component';
+import {ToastrModule} from "ngx-toastr";
+import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 
 @NgModule({
   declarations: [
@@ -25,11 +27,17 @@ import { VaccineUpdateComponent } from './vaccine-update/vaccine-update.componen
   ],
   imports: [
     BrowserModule,
+    BrowserAnimationsModule,
     AppRoutingModule,
     RouterLink,
     HttpClientModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    ToastrModule.forRoot({
+      timeOut: 10000,
+      positionClass: 'toast-bottom-right',
+      preventDuplicates: false,
+    })
   ],
   providers: [
     provideClientHydration(),
