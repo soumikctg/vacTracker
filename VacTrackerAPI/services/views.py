@@ -144,7 +144,7 @@ class UserVaccineView(APIView):
             return Response({"message": "Unauthenticated"}, status=status.HTTP_400_BAD_REQUEST)
 
         # Fetch vaccine details using Django ORM
-        vaccine_details = UserVaccineDetails.objects.filter(user_id=user_id).values('vaccine_given_date', 'vaccine_id')
+        vaccine_details = UserVaccineDetails.objects.filter(User_id_id=user_id).values('Vaccine_given_date', 'Vaccine_id_id')
 
         # Mapping for vaccine types
         vaccine_mapping = {
@@ -168,10 +168,10 @@ class UserVaccineView(APIView):
         vac_date_list = ["Not Given"] * 15
 
         for detail in vaccine_details:
-            vaccine_id = detail['vaccine_id']
+            vaccine_id = detail["Vaccine_id_id"]
             if vaccine_id in vaccine_mapping:
                 index = vaccine_mapping[vaccine_id]
-                vac_date_list[index] = detail['vaccine_given_date']
+                vac_date_list[index] = detail['Vaccine_given_date']
 
         data = {
             'vacDateList': vac_date_list

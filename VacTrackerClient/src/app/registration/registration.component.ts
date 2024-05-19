@@ -33,7 +33,12 @@ export class RegistrationComponent implements OnInit{
     register(){
         console.log(this.registerForm.getRawValue())
         this.http.post('http://127.0.0.1:8000/api/register', this.registerForm.getRawValue())
-            .subscribe(() => this.router.navigate(['/']));
+            .subscribe((response:any) =>{
+              this.router.navigate(['/']);
+            }, (error) => {
+                console.error('Registration failed:', error.error.detail);
+            })
+
     }
 
 }

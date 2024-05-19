@@ -35,7 +35,7 @@ export class VaccineUpdateComponent implements OnInit{
             OPV1: new FormControl(vacUpdate?.boolean_list[5]),
             OPV2: new FormControl(vacUpdate?.boolean_list[6]),
             OPV3: new FormControl(vacUpdate?.boolean_list[7]),
-            PCV1: new FormControl(vacUpdate?.boolean_list[7]),
+            PCV1: new FormControl(vacUpdate?.boolean_list[8]),
             PCV2: new FormControl(vacUpdate?.boolean_list[9]),
             PCV3: new FormControl(vacUpdate?.boolean_list[10]),
             IPV1: new FormControl(vacUpdate?.boolean_list[11]),
